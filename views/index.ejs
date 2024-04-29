@@ -8,5 +8,25 @@
   <body>
     <button id="generate-button">Generate a code</button>
     <p id="generated-code"></p>
+    <script>
+      document
+        .getElementById("generate-button")
+        .addEventListener("click", () => {
+          fetch("/generate-code", {
+            method: "POST",
+          })
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              document.getElementById(
+                "generated-code"
+              ).innerHTML = `${data.code}`;
+            })
+            .catch((error) => {
+              console.error("Error generating the code", error.message);
+            });
+        });
+    </script>
   </body>
 </html>
