@@ -5,6 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const Code = require("./code");
 const TestTaker = require("./test-taker");
+const TestQuestion = require("./test-question");
 
 const app = express();
 
@@ -70,6 +71,16 @@ app.post("/verify-code", async (req, res) => {
     });
   } catch (error) {
     console.error("Error verifying code:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/test-questions", async (req, res) => {
+  try {
+    const testQuestions = await TestQuestion.findAll();
+    res.status(200).json(testQuestions);
+  } catch (error) {
+    console.error("Error fetching test questions:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
