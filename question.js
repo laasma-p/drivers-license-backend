@@ -17,7 +17,15 @@ const Question = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    correct_statement_answer_1: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     statement_2: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    correct_statement_answer_2: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -25,9 +33,17 @@ const Question = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    correct_statement_answer_3: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     statement_4: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    correct_statement_answer_4: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {
