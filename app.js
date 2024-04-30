@@ -4,6 +4,7 @@ const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const Code = require("./code");
+const TestTaker = require("./test-taker");
 
 const app = express();
 
@@ -39,6 +40,39 @@ const generateRandomCode = () => {
 
   return code;
 };
+
+app.post("/verify-code", async (req, res) => {
+  const enteredCode = req.body.code;
+
+  try {
+    const codeExists = await Code.findOne({
+      where: { generated_code: enteredCode },
+    });
+
+    if (!codeExists) {
+      return res.status(404).json({ error: "Invalid code" });
+    }
+
+    const testTaker = await TestTaker.findOne({
+      where: { code: null },
+    });
+
+    if (!testTaker) {
+      return res
+        .status(400)
+        .json({ error: "All codes have been used - generate new ones" });
+    }
+
+    await testTaker.update({ code: enteredCode });
+
+    res.status(200).json({
+      message: "Code verified and assigned to the test taker successfully",
+    });
+  } catch (error) {
+    console.error("Error verifying code:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 const PORT = process.env.PORT;
 
