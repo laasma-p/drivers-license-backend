@@ -13,6 +13,10 @@ const TestQuestion = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    test_question_description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     test_statement_1: {
       type: DataTypes.STRING,
       allowNull: false,
