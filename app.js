@@ -55,7 +55,7 @@ app.post("/verify-code", async (req, res) => {
     }
 
     const testTaker = await TestTaker.findOne({
-      where: { code: null },
+      where: { auth_code: null },
     });
 
     if (!testTaker) {
@@ -64,7 +64,7 @@ app.post("/verify-code", async (req, res) => {
         .json({ error: "All codes have been used - generate new ones" });
     }
 
-    await testTaker.update({ code: enteredCode });
+    await testTaker.update({ auth_code: enteredCode });
 
     res.status(200).json({
       message: "Code verified and assigned to the test taker successfully",
