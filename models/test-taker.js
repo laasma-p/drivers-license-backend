@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const sequelize = require("../sequelize");
 
 const TestTaker = sequelize.define(
   "test_taker",
@@ -17,7 +17,7 @@ const TestTaker = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    code: {
+    auth_code: {
       type: DataTypes.STRING,
       allowNull: true,
     },

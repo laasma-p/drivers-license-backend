@@ -1,49 +1,45 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const sequelize = require("../sequelize");
 
-const Question = sequelize.define(
-  "question",
+const TestQuestion = sequelize.define(
+  "test_question",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    question: {
+    test_question_img_url: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    statement_1: {
+    test_question: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    correct_statement_answer_1: {
+    test_question_description: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    statement_2: {
+    test_statement_1: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    correct_statement_answer_2: {
+    test_statement_2: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    statement_3: {
+    test_statement_3: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    correct_statement_answer_3: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    statement_4: {
+    test_statement_4: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    correct_statement_answer_4: {
+    test_correct_statements: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
@@ -51,4 +47,4 @@ const Question = sequelize.define(
   }
 );
 
-module.exports = Question;
+module.exports = TestQuestion;
