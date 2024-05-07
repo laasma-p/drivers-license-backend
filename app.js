@@ -3,9 +3,9 @@ require("dotenv").config();
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const Code = require("./code");
-const TestTaker = require("./test-taker");
-const TestQuestion = require("./test-question");
+const Code = require("./models/code");
+const TestTaker = require("./models/test-taker");
+const TestQuestion = require("./models/test-question");
 
 const app = express();
 
