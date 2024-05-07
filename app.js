@@ -78,7 +78,7 @@ app.post("/verify-code", async (req, res) => {
 
 app.get("/test-questions", async (req, res) => {
   try {
-    const testQuestions = await TestQuestion.findAll();
+    const testQuestions = await Question.findAll();
     res.status(200).json(testQuestions);
   } catch (error) {
     console.error("Error fetching test questions:", error);
