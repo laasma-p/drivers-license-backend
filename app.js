@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const Code = require("./models/code");
 const TestTaker = require("./models/test-taker");
 const TestQuestion = require("./models/test-question");
+const Question = require("./models/question");
 
 const app = express();
 
