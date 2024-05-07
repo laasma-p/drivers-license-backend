@@ -76,6 +76,16 @@ app.post("/verify-code", async (req, res) => {
   }
 });
 
+app.get("/practice-questions", async (req, res) => {
+  try {
+    const practiceQuestions = await TestQuestion.findAll();
+    res.status(200).json(practiceQuestions);
+  } catch (error) {
+    console.error("Error fetching practice questions:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/test-questions", async (req, res) => {
   try {
     const testQuestions = await Question.findAll();
