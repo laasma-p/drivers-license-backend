@@ -24,6 +24,7 @@ const TestTaker = sequelize.define(
     has_passed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+      allowNull: true,
     },
   },
   {
