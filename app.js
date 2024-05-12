@@ -3,6 +3,7 @@ require("dotenv").config();
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
 const Code = require("./models/code");
 const TestTaker = require("./models/test-taker");
 const TestQuestion = require("./models/test-question");
@@ -67,8 +68,13 @@ app.post("/verify-code", async (req, res) => {
 
     await testTaker.update({ auth_code: enteredCode });
 
+    const token = jwt.sign({ userId: testTaker.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
     res.status(200).json({
       message: "Code verified and assigned to the test taker successfully",
+      token: token,
     });
   } catch (error) {
     console.error("Error verifying code:", error);
