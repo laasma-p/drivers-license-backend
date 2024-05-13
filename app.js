@@ -75,6 +75,7 @@ app.post("/verify-code", async (req, res) => {
     res.status(200).json({
       message: "Code verified and assigned to the test taker successfully",
       token: token,
+      userId: testTaker.id,
     });
   } catch (error) {
     console.error("Error verifying code:", error);
