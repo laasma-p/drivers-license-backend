@@ -9,6 +9,7 @@ const TestTaker = require("./models/test-taker");
 const TestQuestion = require("./models/test-question");
 const Question = require("./models/question");
 const TestQuestionResult = require("./models/test-question-result");
+const QuestionResult = require("./models/question-result");
 
 const app = express();
 
@@ -103,6 +104,36 @@ app.post("/mark-practice-results", async (req, res) => {
       await TestQuestionResult.create({
         test_taker_id,
         test_question_id: question_id,
+        user_selected_answers: user_selected_answers,
+      });
+    }
+
+    res.status(200).json({ message: "Result marked successfully" });
+  } catch (error) {
+    console.error("Error marking the answer:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/mark-test-results", async (req, res) => {
+  const { test_taker_id, question_id, user_selected_answers } = req.body;
+
+  try {
+    const existingResult = await QuestionResult.findOne({
+      where: {
+        test_taker_id,
+        question_id: question_id,
+      },
+    });
+
+    if (existingResult) {
+      await existingResult.update({
+        user_selected_answers: user_selected_answers,
+      });
+    } else {
+      await QuestionResult.create({
+        test_taker_id,
+        question_id: question_id,
         user_selected_answers: user_selected_answers,
       });
     }
