@@ -38,6 +38,6 @@ const QuestionResult = sequelize.define(
 );
 
 QuestionResult.belongsTo(TestTaker, { foreignKey: "test_taker_id" });
-QuestionResult.belongsTo(Question, { foreignKey: "question_id " });
+QuestionResult.belongsTo(Question, { foreignKey: "question_id" });
 
 module.exports = QuestionResult;
