@@ -10,6 +10,7 @@ const TestQuestion = require("./models/test-question");
 const Question = require("./models/question");
 const TestQuestionResult = require("./models/test-question-result");
 const QuestionResult = require("./models/question-result");
+const sequelize = require("sequelize");
 
 const app = express();
 
@@ -157,7 +158,11 @@ app.get("/practice-questions", async (req, res) => {
 
 app.get("/test-questions", async (req, res) => {
   try {
-    const testQuestions = await Question.findAll();
+    const testQuestions = await Question.findAll({
+      order: sequelize.literal("RANDOM()"),
+      limit: 25,
+    });
+
     res.status(200).json(testQuestions);
   } catch (error) {
     console.error("Error fetching test questions:", error);
