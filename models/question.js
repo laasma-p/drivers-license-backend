@@ -35,7 +35,7 @@ const Question = sequelize.define(
     },
     correct_statements: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
