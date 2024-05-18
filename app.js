@@ -120,6 +120,17 @@ app.post("/mark-test-results", async (req, res) => {
   const { test_taker_id, question_id, user_selected_answers } = req.body;
 
   try {
+    const question = await Question.findByPk(question_id);
+
+    if (!question) {
+      return res.status(404).json({ error: "Question is not found" });
+    }
+
+    const correctAnswers = question.correct_statements;
+    const isCorrect =
+      correctAnswers.length === user_selected_answers.length &&
+      correctAnswers.every((answer) => user_selected_answers.includes(answer));
+
     const existingResult = await QuestionResult.findOne({
       where: {
         test_taker_id,
@@ -130,12 +141,14 @@ app.post("/mark-test-results", async (req, res) => {
     if (existingResult) {
       await existingResult.update({
         user_selected_answers: user_selected_answers,
+        is_correct: isCorrect,
       });
     } else {
       await QuestionResult.create({
         test_taker_id,
         question_id: question_id,
         user_selected_answers: user_selected_answers,
+        is_correct: isCorrect,
       });
     }
 
