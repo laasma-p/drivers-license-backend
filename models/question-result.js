@@ -31,6 +31,10 @@ const QuestionResult = sequelize.define(
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
     },
+    is_correct: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,
