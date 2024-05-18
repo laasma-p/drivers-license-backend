@@ -198,6 +198,13 @@ app.get("/results/:test_taker_id", async (req, res) => {
     const mistakes = totalQuestions - correctQuestions;
     const hasPassed = mistakes <= 5;
 
+    if (hasPassed) {
+      await TestTaker.update(
+        { has_passed: true },
+        { where: { id: test_taker_id } }
+      );
+    }
+
     res
       .status(200)
       .json({ correctQuestions, totalQuestions, mistakes, hasPassed });
