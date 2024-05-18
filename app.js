@@ -183,6 +183,30 @@ app.get("/test-questions", async (req, res) => {
   }
 });
 
+app.get("/results/:test_taker_id", async (req, res) => {
+  const { test_taker_id } = req.params;
+
+  try {
+    const results = await QuestionResult.findAll({
+      where: { test_taker_id },
+    });
+
+    const correctQuestions = results.filter(
+      (result) => result.is_correct
+    ).length;
+    const totalQuestions = results.length;
+    const mistakes = totalQuestions - correctQuestions;
+    const hasPassed = mistakes <= 5;
+
+    res
+      .status(200)
+      .json({ correctQuestions, totalQuestions, mistakes, hasPassed });
+  } catch (error) {
+    console.error("Error getting the results:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
