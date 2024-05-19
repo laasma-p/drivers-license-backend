@@ -27,7 +27,7 @@ const Question = sequelize.define(
     },
     statement_3: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     statement_4: {
       type: DataTypes.STRING,
