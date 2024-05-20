@@ -189,6 +189,7 @@ app.get("/results/:test_taker_id", async (req, res) => {
   try {
     const results = await QuestionResult.findAll({
       where: { test_taker_id },
+      include: [{ model: Question }],
     });
 
     const correctQuestions = results.filter(
@@ -205,9 +206,19 @@ app.get("/results/:test_taker_id", async (req, res) => {
       );
     }
 
-    res
-      .status(200)
-      .json({ correctQuestions, totalQuestions, mistakes, hasPassed });
+    const incorrectQuestions = results
+      .map((result, index) => {
+        return result.is_correct ? null : index;
+      })
+      .filter((index) => index !== null);
+
+    res.status(200).json({
+      correctQuestions,
+      totalQuestions,
+      mistakes,
+      hasPassed,
+      incorrectQuestions,
+    });
   } catch (error) {
     console.error("Error getting the results:", error);
     res.status(500).json({ error: "Internal server error" });
