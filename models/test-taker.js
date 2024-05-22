@@ -21,6 +21,10 @@ const TestTaker = sequelize.define(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     phone_number: {
       type: DataTypes.STRING,
       allowNull: false,
