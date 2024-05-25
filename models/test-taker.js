@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../sequelize");
+const Booking = require("./booking");
 
 const TestTaker = sequelize.define(
   "test_taker",
@@ -54,10 +55,20 @@ const TestTaker = sequelize.define(
       defaultValue: false,
       allowNull: true,
     },
+    booking_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: Booking,
+        key: "id",
+      },
+    },
   },
   {
     timestamps: false,
   }
 );
+
+TestTaker.belongsTo(Booking, { foreignKey: "booking_id" });
 
 module.exports = TestTaker;
