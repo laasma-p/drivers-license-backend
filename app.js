@@ -11,6 +11,7 @@ const TestQuestion = require("./models/test-question");
 const Question = require("./models/question");
 const TestQuestionResult = require("./models/test-question-result");
 const QuestionResult = require("./models/question-result");
+const Booking = require("./models/booking");
 const sequelize = require("sequelize");
 
 const app = express();
@@ -20,6 +21,18 @@ app.use(bodyParser.json());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+app.get("/time-slots", async (req, res) => {
+  const { date } = req.query;
+
+  try {
+    const bookings = await Booking.findAll({ where: { date } });
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching time slots:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 app.get("/", (req, res) => {
   res.render("index");
