@@ -13,6 +13,7 @@ const TestQuestionResult = require("./models/test-question-result");
 const QuestionResult = require("./models/question-result");
 const Booking = require("./models/booking");
 const sequelize = require("sequelize");
+const { body, validationResult } = require("express-validator");
 
 const app = express();
 
@@ -270,47 +271,74 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/register", async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    birthday,
-    email,
-    phone_number,
-    password,
-    address,
-    city,
-    post_code,
-  } = req.body;
+app.post(
+  "/register",
+  [
+    body("first_name").notEmpty().withMessage("First name is required"),
+    body("last_name").notEmpty().withMessage("Last name is required"),
+    body("birthday").isDate().withMessage("Valid birthday is required"),
+    body("email").isEmail().withMessage("Valid email is required"),
+    body("phone_number").notEmpty().withMessage("Phone number is required"),
+    body("password")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long"),
+    body("repeat_password")
+      .custom((value, { req }) => value === req.body.password)
+      .withMessage("Passwords do not match"),
+    body("address").notEmpty().withMessage("Address is required"),
+    body("city").notEmpty().withMessage("City is required"),
+    body("post_code")
+      .matches(/^\d{4}$/)
+      .withMessage("Post code is invalid"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-  try {
-    const existingUser = await TestTaker.findOne({ where: { email } });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newTestTaker = await TestTaker.create({
+    const {
       first_name,
       last_name,
       birthday,
       email,
       phone_number,
-      password: hashedPassword,
+      password,
       address,
       city,
       post_code,
-    });
+    } = req.body;
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    console.error("Cannot register the user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    try {
+      const existingUser = await TestTaker.findOne({ where: { email } });
+
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const newTestTaker = await TestTaker.create({
+        first_name,
+        last_name,
+        birthday,
+        email,
+        phone_number,
+        password: hashedPassword,
+        address,
+        city,
+        post_code,
+      });
+
+      res.status(201).json({ message: "User registered successfully" });
+    } catch (error) {
+      console.error("Cannot register the user:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
 const PORT = process.env.PORT;
 
