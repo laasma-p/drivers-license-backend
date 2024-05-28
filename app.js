@@ -23,6 +23,36 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+app.post("/book-a-time", async (req, res) => {
+  const { bookingId } = req.body;
+  const token = req.headers.authorization.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const testTakerId = decoded.userId;
+
+    const booking = await Booking.findByPk(bookingId);
+    if (!booking || booking.available_spots === 0) {
+      return res.status(400).json({ error: "Not possible to book a slot" });
+    }
+
+    await Booking.update(
+      { available_spots: booking.available_spots - 1 },
+      { where: { id: bookingId } }
+    );
+
+    await TestTaker.update(
+      { booking_id: bookingId },
+      { where: { id: testTakerId } }
+    );
+
+    res.status(200).json({ message: "Successfully booked" });
+  } catch (error) {
+    console.error("Error booking a slot:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/time-slots", async (req, res) => {
   const { date } = req.query;
 
