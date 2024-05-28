@@ -84,39 +84,6 @@ app.get("/current-booking", authenticateJWT, async (req, res) => {
   }
 });
 
-app.post("/time-slots", authenticateJWT, async (req, res) => {
-  const { bookingId } = req.body;
-  const userId = req.user.userId;
-
-  try {
-    const booking = await Booking.findByPk(bookingId);
-
-    if (!booking) {
-      return res.status(404).json({ message: "Booking slot not found" });
-    }
-
-    if (booking.available_spots === 0) {
-      return res
-        .status(400)
-        .json({ message: "No available spots for this slot" });
-    }
-    await Booking.update(
-      { available_spots: booking.available_spots - 1 },
-      { where: { id: bookingId } }
-    );
-
-    await TestTaker.update(
-      { booking_id: booking.id },
-      { where: { id: userId } }
-    );
-
-    res.status(200).json({ message: "Booking successful" });
-  } catch (error) {
-    console.error("Error booking slot:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 app.post("/book-a-time", authenticateJWT, async (req, res) => {
   const { bookingId } = req.body;
   const testTakerId = req.user.userId;
