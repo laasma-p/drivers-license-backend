@@ -40,6 +40,32 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
+app.post("/cancel-booking", authenticateJWT, async (req, res) => {
+  const userId = req.user.userId;
+
+  try {
+    const user = await TestTaker.findByPk(userId);
+
+    if (!user || !user.booking_id) {
+      return res.status(400).json({ message: "No booking to cancel" });
+    }
+
+    const booking = await Booking.findByPk(user.booking_id);
+
+    await Booking.update(
+      { available_spots: booking.available_spots + 1 },
+      { where: { id: booking.id } }
+    );
+
+    await TestTaker.update({ booking_id: null }, { where: { id: userId } });
+
+    res.status(200).json({ message: "Booking cancelled successfully" });
+  } catch (error) {
+    console.error("Error cancelling the booking:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/current-booking", authenticateJWT, async (req, res) => {
   const userId = req.user.userId;
 
@@ -54,6 +80,39 @@ app.get("/current-booking", authenticateJWT, async (req, res) => {
     res.status(200).json(booking);
   } catch (error) {
     console.error("Error fetching current booking:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/time-slots", authenticateJWT, async (req, res) => {
+  const { bookingId } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const booking = await Booking.findByPk(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking slot not found" });
+    }
+
+    if (booking.available_spots === 0) {
+      return res
+        .status(400)
+        .json({ message: "No available spots for this slot" });
+    }
+    await Booking.update(
+      { available_spots: booking.available_spots - 1 },
+      { where: { id: bookingId } }
+    );
+
+    await TestTaker.update(
+      { booking_id: booking.id },
+      { where: { id: userId } }
+    );
+
+    res.status(200).json({ message: "Booking successful" });
+  } catch (error) {
+    console.error("Error booking slot:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
