@@ -23,14 +23,46 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.post("/book-a-time", async (req, res) => {
-  const { bookingId } = req.body;
-  const token = req.headers.authorization.split(" ")[1];
+const authenticateJWT = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(403).json({ message: "No token provided" });
+  }
+
+  jwt.verify(token.split(" ")[1], process.env.JWT_SECRET, (error, decoded) => {
+    if (error) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    req.user = decoded;
+    next();
+  });
+};
+
+app.get("/current-booking", authenticateJWT, async (req, res) => {
+  const userId = req.user.userId;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const testTakerId = decoded.userId;
+    const user = await TestTaker.findByPk(userId, { include: Booking });
 
+    if (!user || !user.booking_id) {
+      return res.status(404).json({ message: "No current booking found" });
+    }
+
+    const booking = await Booking.findByPk(user.booking_id);
+    res.status(200).json(booking);
+  } catch (error) {
+    console.error("Error fetching current booking:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/book-a-time", authenticateJWT, async (req, res) => {
+  const { bookingId } = req.body;
+  const testTakerId = req.user.userId;
+
+  try {
     const booking = await Booking.findByPk(bookingId);
     if (!booking || booking.available_spots === 0) {
       return res.status(400).json({ error: "Not possible to book a slot" });
