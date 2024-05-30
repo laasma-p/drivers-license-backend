@@ -89,6 +89,14 @@ app.post("/book-a-time", authenticateJWT, async (req, res) => {
   const testTakerId = req.user.userId;
 
   try {
+    const user = await TestTaker.findByPk(testTakerId);
+
+    if (user.booking_id) {
+      return res
+        .status(400)
+        .json({ error: "User already has an active booking" });
+    }
+
     const booking = await Booking.findByPk(bookingId);
     if (!booking || booking.available_spots === 0) {
       return res.status(400).json({ error: "Not possible to book a slot" });
