@@ -17,6 +17,10 @@ const Booking = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    booking_location: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     date: {
       type: DataTypes.DATEONLY,
       allowNull: false,
