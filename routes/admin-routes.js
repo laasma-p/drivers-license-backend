@@ -5,6 +5,10 @@ const Code = require("../models/code");
 const TestTaker = require("../models/test-taker");
 const router = express.Router();
 
+router.get("/", (req, res) => {
+  res.render("index");
+});
+
 router.post("/generate-code", async (req, res) => {
   try {
     const generatedCode = generateRandomCode();
