@@ -12,7 +12,7 @@
       document
         .getElementById("generate-button")
         .addEventListener("click", () => {
-          fetch("/generate-code", {
+          fetch("/admin/generate-code", {
             method: "POST",
           })
             .then((response) => {
