@@ -71,13 +71,17 @@ router.post("/verify-code", async (req, res) => {
     }
 
     const testTaker = await TestTaker.findOne({
-      where: { auth_code: null },
+      where: { id: codeExists.test_taker_id },
     });
 
     if (!testTaker) {
+      return res.status(400).json({ error: "Test taker not found" });
+    }
+
+    if (testTaker.auth_code && testTaker.auth_code === enteredCode) {
       return res
         .status(400)
-        .json({ error: "All codes have been used - generate new ones" });
+        .json({ error: "Code already in use for the test" });
     }
 
     await testTaker.update({ auth_code: enteredCode });
