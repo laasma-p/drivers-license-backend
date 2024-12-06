@@ -3,10 +3,21 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const Code = require("../models/code");
 const TestTaker = require("../models/test-taker");
+const Booking = require("../models/booking");
 const router = express.Router();
 
 router.get("/", (req, res) => {
   res.render("index");
+});
+
+router.get("/time-slots", async (req, res) => {
+  try {
+    const bookings = await Booking.findAll();
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching the bookings:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.post("/generate-code", async (req, res) => {
