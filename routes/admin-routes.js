@@ -75,7 +75,7 @@ router.post("/verify-code", async (req, res) => {
     });
 
     if (!testTaker) {
-      return res.status(400).json({ error: "Test taker not found" });
+      return res.status(404).json({ error: "Test taker not found" });
     }
 
     if (testTaker.auth_code && testTaker.auth_code === enteredCode) {
