@@ -20,6 +20,21 @@ router.get("/time-slots", async (req, res) => {
   }
 });
 
+router.get("/test-takers", async (req, res) => {
+  const { bookingId } = req.query;
+
+  try {
+    const testTakers = await TestTaker.findAll({
+      where: { booking_id: bookingId },
+    });
+
+    res.status(200).json(testTakers);
+  } catch (error) {
+    console.error("Error fetching test takers:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/generate-code", async (req, res) => {
   try {
     const generatedCode = generateRandomCode();
