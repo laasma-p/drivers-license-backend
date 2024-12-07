@@ -12,13 +12,25 @@
     </header>
     <main>
       <label for="test-time">Select the test time:</label>
-      <select id="test-time">
-        <button>Find test takers</button>
-      </select>
+      <select id="test-time"></select>
+      <button>Find test takers</button>
     </main>
     <button id="generate-button">Generate a code</button>
     <p id="generated-code"></p>
     <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/admin/time-slots")
+          .then((response) => response.json())
+          .then((times) => {
+            const timeSelector = document.getElementById("test-time");
+            times.forEach((time) => {
+              const option = document.createElement("option");
+              option.value = time.id;
+              option.textContent = `${time.date} at ${time.time}`;
+              timeSelector.appendChild(option);
+            });
+          });
+      });
       document
         .getElementById("generate-button")
         .addEventListener("click", () => {
