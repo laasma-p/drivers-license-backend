@@ -13,7 +13,7 @@
     <main>
       <label for="test-time">Select the test time:</label>
       <select id="test-time"></select>
-      <button>Find test takers</button>
+      <button id="show-test-takers">Find test takers</button>
     </main>
     <button id="generate-button">Generate a code</button>
     <p id="generated-code"></p>
@@ -29,8 +29,48 @@
               option.textContent = `${time.date} at ${time.time}`;
               timeSelector.appendChild(option);
             });
+          })
+          .catch((error) => {
+            console.error("Error fetching time slots:", error);
           });
       });
+      document
+        .getElementById("show-test-takers")
+        .addEventListener("click", () => {
+          const timeId = document.getElementById("test-time").value;
+
+          const existingContent = document.getElementById("dynamic-content");
+          if (existingContent) {
+            existingContent.remove();
+          }
+
+          fetch(`/admin/test-takers?bookingId=${timeId}`)
+            .then((response) => response.json())
+            .then((testTakers) => {
+              const dynamicContent = document.createElement("div");
+              dynamicContent.id = "dynamic-content";
+              document.querySelector("main").appendChild(dynamicContent);
+
+              if (testTakers.length === 0) {
+                const message = document.createElement("p");
+                message.textContent = "No test takers found for this test.";
+                dynamicContent.appendChild(message);
+              } else {
+                const heading = document.createElement("h2");
+                heading.textContent = "Test takers";
+                dynamicContent.appendChild(heading);
+
+                const testTakersList = document.createElement("ul");
+                testTakers.forEach((testTaker) => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${testTaker.first_name} ${testTaker.last_name}`;
+                  testTakersList.appendChild(listItem);
+                });
+
+                dynamicContent.appendChild(testTakersList);
+              }
+            });
+        });
       document
         .getElementById("generate-button")
         .addEventListener("click", () => {
