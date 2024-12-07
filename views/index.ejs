@@ -6,14 +6,32 @@
     <link href="/css/output.css" rel="stylesheet" type="text/css" />
     <title>Code generator</title>
   </head>
-  <body>
-    <header>
-      <h1>Generate codes for the theory test authorization</h1>
+  <body class="bg-gray-100 min-h-dvh flex flex-col items-center p-6">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl text-gray-950 font-semibold mb-4">
+        Generate codes for the theory test authorization
+      </h1>
     </header>
-    <main>
-      <label for="test-time">Select the test time:</label>
-      <select id="test-time"></select>
-      <button id="show-test-takers">Find test takers</button>
+    <main class="w-full max-w-3xl shadow-md rounded-lg p-6">
+      <div class="mb-6">
+        <label
+          for="test-time"
+          class="block text-lg font-medium text-gray-950 mb-2"
+          >Select the test time:</label
+        >
+        <div class="flex space-x-4">
+          <select
+            id="test-time"
+            class="flex-1 p-2 border rounded-lg text-gray-950 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          ></select>
+          <button
+            id="show-test-takers"
+            class="bg-blue-400 text-gray-100 px-4 py-2 rounded-lg shadow hover:bg-blue-500 transition-all duration-300"
+          >
+            Find test takers
+          </button>
+        </div>
+      </div>
     </main>
     <script>
       function formatTime(timeString) {
@@ -52,18 +70,23 @@
             .then((testTakers) => {
               const dynamicContent = document.createElement("div");
               dynamicContent.id = "dynamic-content";
+              dynamicContent.className = "border-t pt-6 mt-6 border-blue-400";
               document.querySelector("main").appendChild(dynamicContent);
 
               if (testTakers.length === 0) {
                 const message = document.createElement("p");
                 message.textContent = "No test takers found for this test.";
+                message.className = "text-red-400 text-lg";
                 dynamicContent.appendChild(message);
               } else {
                 const heading = document.createElement("h2");
                 heading.textContent = "Test takers";
+                heading.className = "text-2xl font-semibold text-gray-950 mb-4";
                 dynamicContent.appendChild(heading);
 
                 const testTakersList = document.createElement("ul");
+                testTakersList.className =
+                  "space-y-2 text-gray-950 text-lg list-disc pl-6";
                 testTakers.forEach((testTaker) => {
                   const listItem = document.createElement("li");
                   listItem.textContent = `${testTaker.first_name} ${testTaker.last_name}`;
@@ -74,6 +97,8 @@
 
                 const generateCodesButton = document.createElement("button");
                 generateCodesButton.textContent = "Generate codes";
+                generateCodesButton.className =
+                  "mt-4 bg-blue-400 text-gray-100 px-4 py-2 rounded-lg shadow hover:bg-blue-500 transition-all duration-300";
                 generateCodesButton.addEventListener("click", () => {
                   fetch("/admin/generate-codes", {
                     method: "POST",
@@ -87,12 +112,19 @@
                       if (!codesSection) {
                         const codesSection = document.createElement("div");
                         codesSection.id = "codes";
+                        codesSection.className =
+                          "border-t pt-6 mt-6 border-blue-400";
+
                         const codesHeading = document.createElement("h2");
                         codesHeading.textContent = "Codes";
+                        codesHeading.className =
+                          "text-2xl font-semibold text-gray-950 mb-4";
                         codesSection.appendChild(codesHeading);
 
                         const codesList = document.createElement("ul");
                         codesList.id = "codes-list";
+                        codesList.className =
+                          "space-y-2 text-gray-950 text-lg list-disc pl-6";
                         codesSection.appendChild(codesList);
 
                         dynamicContent.appendChild(codesSection);
