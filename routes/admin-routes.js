@@ -35,13 +35,33 @@ router.get("/test-takers", async (req, res) => {
   }
 });
 
-router.post("/generate-code", async (req, res) => {
+router.post("/generate-codes", async (req, res) => {
+  const { bookingId } = req.body;
+
   try {
-    const generatedCode = generateRandomCode();
-    const savedCode = await Code.create({ generated_code: generatedCode });
-    res.status(200).json({ code: savedCode.generated_code });
+    const testTakers = await TestTaker.findAll({
+      where: { booking_id: bookingId },
+    });
+
+    if (testTakers.length === 0) {
+      return res.status(400).json({ error: "No test takers for this test" });
+    }
+
+    const codes = [];
+    for (const testTaker of testTakers) {
+      const generatedCode = generateRandomCode();
+      const savedCode = await Code.create({
+        generated_code: generatedCode,
+        test_taker_id: testTaker.id,
+        booking_id: bookingId,
+      });
+
+      codes.push(savedCode);
+    }
+
+    res.status(200).json(codes);
   } catch (error) {
-    console.error("Error saving the generated code:", error);
+    console.error("Error saving the generated codes:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
