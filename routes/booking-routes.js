@@ -62,7 +62,17 @@ router.get("/current-booking", authenticateJWT, async (req, res) => {
       return res.status(404).json({ message: "No current booking found" });
     }
 
+    const currentDateTime = new Date();
+
     const booking = await Booking.findByPk(user.booking_id);
+
+    const bookingDateTime = new Date(`${booking.date}T${booking.time}`);
+
+    if (bookingDateTime <= currentDateTime) {
+      await TestTaker.update({ booking_id: null }, { where: { id: userId } });
+      return res.status(404).json({ messsage: "No active booking found" });
+    }
+
     res.status(200).json(booking);
   } catch (error) {
     console.error("Error fetching current booking:", error);
