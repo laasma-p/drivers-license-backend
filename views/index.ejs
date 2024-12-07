@@ -16,6 +16,11 @@
       <button id="show-test-takers">Find test takers</button>
     </main>
     <script>
+      function formatTime(timeString) {
+        const [hours, minutes] = timeString.split(":");
+        return `${hours}:${minutes}`;
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         fetch("/admin/time-slots")
           .then((response) => response.json())
@@ -24,7 +29,7 @@
             times.forEach((time) => {
               const option = document.createElement("option");
               option.value = time.id;
-              option.textContent = `${time.date} at ${time.time}`;
+              option.textContent = `${time.date} at ${formatTime(time.time)}`;
               timeSelector.appendChild(option);
             });
           })
