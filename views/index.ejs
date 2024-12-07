@@ -89,7 +89,19 @@
                   "space-y-2 text-gray-950 text-lg list-disc pl-6";
                 testTakers.forEach((testTaker) => {
                   const listItem = document.createElement("li");
-                  listItem.textContent = `${testTaker.first_name} ${testTaker.last_name}`;
+                  listItem.className = "flex items-center";
+
+                  const name = document.createElement("span");
+                  name.textContent = `${testTaker.first_name} ${testTaker.last_name}`;
+                  name.className = "text-gray-950";
+                  listItem.appendChild(name);
+
+                  const code = document.createElement("span");
+                  code.className = "text-semibold";
+                  code.dataset.testTakerId = testTaker.id;
+                  code.textContent = "";
+                  listItem.appendChild(code);
+
                   testTakersList.appendChild(listItem);
                 });
 
@@ -107,36 +119,14 @@
                   })
                     .then((response) => response.json())
                     .then((codes) => {
-                      const codesSection = document.getElementById("codes");
-
-                      if (!codesSection) {
-                        const codesSection = document.createElement("div");
-                        codesSection.id = "codes";
-                        codesSection.className =
-                          "border-t pt-6 mt-6 border-blue-400";
-
-                        const codesHeading = document.createElement("h2");
-                        codesHeading.textContent = "Codes";
-                        codesHeading.className =
-                          "text-2xl font-semibold text-gray-950 mb-4";
-                        codesSection.appendChild(codesHeading);
-
-                        const codesList = document.createElement("ul");
-                        codesList.id = "codes-list";
-                        codesList.className =
-                          "space-y-2 text-gray-950 text-lg list-disc pl-6";
-                        codesSection.appendChild(codesList);
-
-                        dynamicContent.appendChild(codesSection);
-                      }
-
-                      const codesList = document.getElementById("codes-list");
-                      codesList.innerHTML = "";
-
                       codes.forEach((code) => {
-                        const listItem = document.createElement("li");
-                        listItem.textContent = `Code: ${code.generated_code}`;
-                        codesList.appendChild(listItem);
+                        const codeElement = document.querySelector(
+                          `span[data-test-taker-id="${code.test_taker_id}"]`
+                        );
+
+                        if (codeElement) {
+                          codeElement.innerHTML = `&nbsp;(${code.generated_code})`;
+                        }
                       });
                     })
                     .catch((error) => {
