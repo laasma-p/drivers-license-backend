@@ -103,6 +103,7 @@
                 testTakerData[testTaker.id] = {
                   element: listItem,
                   codeElement: null,
+                  regenerateButton: null,
                 };
 
                 testTakersList.appendChild(listItem);
@@ -136,14 +137,41 @@
                         }
 
                         testTakerInfo.codeElement.textContent = `(${code.generated_code})`;
-                      }
 
-                      const codeElement = document.querySelector(
-                        `span[data-test-taker-id="${code.test_taker_id}"]`
-                      );
+                        if (!testTakerInfo.regenerateButton) {
+                          testTakerInfo.regenerateButton =
+                            document.createElement("button");
+                          testTakerInfo.regenerateButton.textContent =
+                            "Regenerate";
+                          testTakerInfo.regenerateButton.className =
+                            "text-sm bg-red-400 text-gray-100 px-2 py-1 ml-1 rounded-md hover:bg-red-500 transition-all duration-300";
+                          testTakerInfo.regenerateButton.addEventListener(
+                            "click",
+                            () => {
+                              fetch("/admin/regenerate-code", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  testTakerId: code.test_taker_id,
+                                }),
+                              })
+                                .then((response) => response.json())
+                                .then((newCode) => {
+                                  testTakerInfo.codeElement.textContent = `(${newCode.generated_code})`;
+                                })
+                                .catch((error) => {
+                                  console.error(
+                                    "Error regenerating the code:",
+                                    error
+                                  );
+                                });
+                            }
+                          );
 
-                      if (codeElement) {
-                        codeElement.innerHTML = `&nbsp;(${code.generated_code})`;
+                          testTakerInfo.element.appendChild(
+                            testTakerInfo.regenerateButton
+                          );
+                        }
                       }
                     });
                   })
