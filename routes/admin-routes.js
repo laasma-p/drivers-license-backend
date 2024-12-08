@@ -78,6 +78,30 @@ const generateRandomCode = () => {
   return code;
 };
 
+router.post("/regenerate-code", async (req, res) => {
+  const { testTakerId } = req.body;
+
+  try {
+    const testTaker = await TestTaker.findByPk(testTakerId);
+
+    if (!testTaker) {
+      return res.status(404).json({ error: "Test taker not found" });
+    }
+
+    const newCode = generateRandomCode();
+    const savedCode = await Code.create({
+      generated_code: newCode,
+      test_taker_id: testTakerId,
+      booking_id: testTaker.booking_id,
+    });
+
+    res.status(200).json(savedCode);
+  } catch (error) {
+    console.error("Error regenerating the code:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/verify-code", async (req, res) => {
   const enteredCode = req.body.code;
 
