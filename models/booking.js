@@ -33,6 +33,9 @@ const Booking = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 30,
       allowNull: false,
+      validate: {
+        min: 0,
+      },
     },
   },
   {
