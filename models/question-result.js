@@ -18,6 +18,8 @@ const QuestionResult = sequelize.define(
         model: TestTaker,
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     question_id: {
       type: DataTypes.INTEGER,
@@ -26,6 +28,8 @@ const QuestionResult = sequelize.define(
         model: Question,
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     user_selected_answers: {
       type: DataTypes.ARRAY(DataTypes.INTEGER),

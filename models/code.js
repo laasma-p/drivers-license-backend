@@ -18,10 +18,13 @@ const Code = sequelize.define(
     },
     test_taker_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: TestTaker,
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
     booking_id: {
       type: DataTypes.INTEGER,
@@ -29,6 +32,8 @@ const Code = sequelize.define(
         model: Booking,
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
   },
   {
