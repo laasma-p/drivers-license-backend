@@ -53,7 +53,7 @@ const TestTaker = sequelize.define(
     has_passed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
-      allowNull: true,
+      allowNull: false,
     },
     booking_id: {
       type: DataTypes.INTEGER,

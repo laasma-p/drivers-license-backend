@@ -32,7 +32,7 @@ const Booking = sequelize.define(
     available_spots: {
       type: DataTypes.INTEGER,
       defaultValue: 30,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
