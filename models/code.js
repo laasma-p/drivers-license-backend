@@ -28,6 +28,7 @@ const Code = sequelize.define(
     },
     booking_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: Booking,
         key: "id",
