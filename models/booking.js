@@ -40,6 +40,14 @@ const Booking = sequelize.define(
   },
   {
     timestamps: false,
+    indexes: [
+      {
+        fields: ["date"],
+      },
+      {
+        fields: ["available_spots"],
+      },
+    ],
   }
 );
 

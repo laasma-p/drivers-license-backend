@@ -39,6 +39,14 @@ const Code = sequelize.define(
   },
   {
     timestamps: false,
+    indexes: [
+      {
+        fields: ["test_taker_id"],
+      },
+      {
+        fields: ["booking_id"],
+      },
+    ],
   }
 );
 

@@ -69,6 +69,14 @@ const TestTaker = sequelize.define(
   },
   {
     timestamps: false,
+    indexes: [
+      {
+        fields: ["booking_id"],
+      },
+      {
+        fields: ["email"],
+      },
+    ],
   }
 );
 

@@ -42,6 +42,17 @@ const QuestionResult = sequelize.define(
   },
   {
     timestamps: false,
+    indexes: [
+      {
+        fields: ["test_taker_id"],
+      },
+      {
+        fields: ["question_id"],
+      },
+      {
+        fields: ["is_correct"],
+      },
+    ],
   }
 );
 
